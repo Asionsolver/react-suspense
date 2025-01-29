@@ -1,45 +1,15 @@
 import React, { useEffect, useState } from "react";
+import fetchPosts from "../api/fetchPosts";
 
-export const PostSelector = ({onSelectPost}) => {
-  const [posts, setPosts] = useState([]);
-  const [isPostsLoading, setIsPostsLoading] = useState(false);
-  const [isPostsError, setIsPostsError] = useState(null);
+const resource = fetchPosts("https://jsonplaceholder.typicode.com/posts?_limit=5");  // return a promise
 
-  useEffect(() => {
-    setIsPostsLoading(true);
-    setIsPostsError(null);
+export const PostSelector = ({ onSelectPost }) => {
+  // throw new Promise((res)=>console.log("hello"));
+  
+  const posts = resource.read();
 
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch(
-          "https://jsonplaceholder.typicode.com/posts?_limit=5"
-        );
-        const data = await response.json();
-        if (response.ok) {
-          setIsPostsLoading(false);
-          setPosts(data);
-        } else {
-          setIsPostsLoading(false);
-          setIsPostsError("Something went wrong while fetching posts");
-        }
-      } catch (error) {
-        setIsPostsLoading(false);
-        setIsPostsError(error.message);
-      }
-    };
-
-    fetchPosts();
-  }, []);
-
-  // chose what to render for PostSelector
-  let postContent;
-
-  if (isPostsLoading) {
-    postContent = <div>Loading posts...</div>;
-  } else if (!isPostsLoading && isPostsError) {
-    postContent = <div>{isPostsError}</div>;
-  } else {
-    postContent = (
+  return (
+    <div>
       <select onChange={onSelectPost}>
         <option value="">Select Post</option>
         {posts.map((post) => (
@@ -48,8 +18,6 @@ export const PostSelector = ({onSelectPost}) => {
           </option>
         ))}
       </select>
-    );
-  }
-
-    return <div>{postContent}</div>;
+    </div>
+  );
 };

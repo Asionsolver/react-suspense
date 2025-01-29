@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { PostSelector } from "./components/PostSelector";
+import React, { Suspense, useState } from "react";
+import { PostSelector } from " ./components/PostSelector";
 import { Comments } from "./components/Comments";
 
 export default function App() {
@@ -11,8 +11,15 @@ export default function App() {
     <div>
       <h1>React Suspense and Error Boundaries</h1>
       <div>
-        <PostSelector onSelectPost={handleSelectPost} />
-        {selectedPostId && <Comments postId={selectedPostId} />}
+        <Suspense fallback={<h1>Loading Post...</h1>}>
+          <PostSelector onSelectPost={handleSelectPost} />
+        </Suspense>
+
+        {selectedPostId &&
+          <Suspense fallback={<h1>Loading Comments...</h1>}>
+            <Comments postId={selectedPostId} />
+          </Suspense>
+        }
       </div>
     </div>
   );
