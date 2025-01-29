@@ -9,17 +9,24 @@ export default function App() {
   };
   return (
     <div>
+
       <h1>React Suspense and Error Boundaries</h1>
       <div>
-        <Suspense fallback={<h1>Loading Post...</h1>}>
-          <PostSelector onSelectPost={handleSelectPost} />
-        </Suspense>
+        <ErrorBoundary fallback={<h1>Error fetching posts.</h1>}>
+          <Suspense fallback={<h1>Loading Post...</h1>}>
+            <PostSelector onSelectPost={handleSelectPost} />
+          </Suspense>
+        </ErrorBoundary>
+
 
         {selectedPostId &&
-          <Suspense fallback={<h1>Loading Comments...</h1>}>
-            <Comments postId={selectedPostId} />
-          </Suspense>
+          <ErrorBoundary fallback={<h1>Error fetching comments.</h1>}>
+            <Suspense fallback={<h1>Loading Comments...</h1>}>
+              <Comments postId={selectedPostId} />
+            </Suspense>
+          </ErrorBoundary>
         }
+
       </div>
     </div>
   );
